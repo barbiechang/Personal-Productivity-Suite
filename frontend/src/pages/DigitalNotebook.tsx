@@ -45,7 +45,7 @@ export default function DigitalNotebook() {
     const saved = localStorage.getItem(AUTOSAVE_KEY)
     if (saved) {
       restoringRef.current = true
-      canvas.loadFromJSON(saved, () => {
+      canvas.loadFromJSON(saved).then(() => {
         canvas.renderAll()
         restoringRef.current = false
         historyRef.current.undo = [saved]
@@ -116,7 +116,7 @@ export default function DigitalNotebook() {
     history.redo.push(current)
     const prev = history.undo[history.undo.length - 1]
     restoringRef.current = true
-    canvas.loadFromJSON(prev, () => {
+    canvas.loadFromJSON(prev).then(() => {
       canvas.renderAll()
       restoringRef.current = false
       scheduleAutosave(prev)
@@ -130,7 +130,7 @@ export default function DigitalNotebook() {
     const next = history.redo.pop()!
     history.undo.push(next)
     restoringRef.current = true
-    canvas.loadFromJSON(next, () => {
+    canvas.loadFromJSON(next).then(() => {
       canvas.renderAll()
       restoringRef.current = false
       scheduleAutosave(next)
