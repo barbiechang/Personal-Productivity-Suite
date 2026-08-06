@@ -65,7 +65,7 @@ export default function ExpenseTracker() {
         </select>
         <button
           onClick={addExpense}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          className="rounded-md bg-pink-600 px-4 py-2 text-sm font-medium text-white hover:bg-pink-700"
         >
           Add
         </button>

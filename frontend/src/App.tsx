@@ -1,26 +1,32 @@
 import { Routes, Route } from 'react-router-dom'
 import AppLayout from './layout/AppLayout'
 import Dashboard from './pages/Dashboard'
-import TodoList from './pages/TodoList'
-import Notes from './pages/Notes'
-import DigitalNotebook from './pages/DigitalNotebook'
-import Calendar from './pages/Calendar'
+import TodoProjectGallery from './pages/todos/TodoProjectGallery'
+import TodoProjectDetail from './pages/todos/TodoProjectDetail'
+import NotebookGallery from './pages/notebook/NotebookGallery'
+import NotebookEditor from './pages/notebook/NotebookEditor'
+import Calendar from './pages/calendar/CalendarPage'
 import ExpenseTracker from './pages/ExpenseTracker'
 import FileManager from './pages/FileManager'
-import AiAssistant from './pages/AiAssistant'
+import EnglishPractice from './pages/english/EnglishPractice'
+import TripGallery from './pages/travel/TripGallery'
+import TripDetail from './pages/travel/TripDetail'
 
 function App() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/todos" element={<TodoList />} />
-        <Route path="/notes" element={<Notes />} />
-        <Route path="/notebook" element={<DigitalNotebook />} />
+        <Route path="/todos" element={<TodoProjectGallery />} />
+        <Route path="/todos/:projectId" element={<TodoProjectDetail />} />
+        <Route path="/notebook" element={<NotebookGallery />} />
+        <Route path="/notebook/:notebookId" element={<NotebookEditor />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/expenses" element={<ExpenseTracker />} />
         <Route path="/files" element={<FileManager />} />
-        <Route path="/assistant" element={<AiAssistant />} />
+        <Route path="/english" element={<EnglishPractice />} />
+        <Route path="/travel" element={<TripGallery />} />
+        <Route path="/travel/:tripId" element={<TripDetail />} />
       </Route>
     </Routes>
   )

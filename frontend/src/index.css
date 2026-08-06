@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "@fontsource/libertinus-serif/400.css";
+@import "@fontsource/libertinus-serif/400-italic.css";
+@import "@fontsource/libertinus-serif/600.css";
+@import "@fontsource/libertinus-serif/700.css";
 
 html,
 body,
@@ -8,5 +12,5 @@ body,
 
 body {
   margin: 0;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-family: "Libertinus Serif", Georgia, "Times New Roman", serif;
 }

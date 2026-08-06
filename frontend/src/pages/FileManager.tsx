@@ -25,7 +25,7 @@ export default function FileManager() {
     <div>
       <h2 className="mb-4 text-xl font-semibold">File Manager</h2>
 
-      <label className="mb-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-8 text-sm text-gray-500 hover:border-indigo-400">
+      <label className="mb-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-8 text-sm text-gray-500 hover:border-pink-400">
         Drop files here or click to upload
         <input type="file" multiple className="hidden" onChange={(e) => handleUpload(e.target.files)} />
       </label>
