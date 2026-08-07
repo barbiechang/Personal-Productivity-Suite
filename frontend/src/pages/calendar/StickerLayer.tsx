@@ -109,14 +109,15 @@ function Sticker({
   return (
     <div
       className="group/sticker absolute"
-      style={{ left: `${pos.x}%`, top: `${pos.y}%`, width: `${size.w}%`, height: `${size.h}%`, zIndex: sticker.zIndex }}
+      style={{ left: `${pos.x}%`, top: `${pos.y}%`, width: `${size.w}%`, zIndex: sticker.zIndex }}
     >
       <img
         src={sticker.imageDataUrl}
         alt=""
         draggable={false}
         onMouseDown={startDrag}
-        className="h-full w-full cursor-move select-none object-contain drop-shadow-sm"
+        className="block w-full cursor-move select-none drop-shadow-sm"
+        style={{ height: 'auto' }}
       />
       <button
         onClick={(e) => {

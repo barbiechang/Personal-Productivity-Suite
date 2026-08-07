@@ -3,6 +3,11 @@
 @import "@fontsource/libertinus-serif/400-italic.css";
 @import "@fontsource/libertinus-serif/600.css";
 @import "@fontsource/libertinus-serif/700.css";
+@import "@fontsource/press-start-2p/400.css";
+
+.font-pixel {
+  font-family: "Press Start 2P", monospace;
+}
 
 html,
 body,

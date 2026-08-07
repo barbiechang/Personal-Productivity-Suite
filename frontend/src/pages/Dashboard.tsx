@@ -38,6 +38,37 @@ function daysUntilBirthday(birthday: string) {
   return Math.round((next.getTime() - today.getTime()) / 86400000)
 }
 
+const CUPCAKE_PIXELS = [
+  ['', '', '', 'w', 'c', '', ''],
+  ['', '', 'w', 'w', 'r', 'c', ''],
+  ['', 'w', 'c', 'w', 'w', 'b', ''],
+  ['', 'w', 'w', 'c', 'w', 'c', ''],
+  ['w', 'c', 'c', 'w', 'c', 'c', 'w'],
+  ['t', 't', 't', 't', 't', 't', 't'],
+  ['u', 'u', 't', 't', 't', 'u', 'u'],
+]
+
+const CUPCAKE_COLORS: Record<string, string> = {
+  w: '#fdfbf6',
+  c: '#e8e3ce',
+  r: '#f2a0a0',
+  b: '#8fcbe8',
+  t: '#f3cf7a',
+  u: '#e0ac54',
+}
+
+function PixelCupcake() {
+  return (
+    <div className="grid shrink-0 grid-cols-7 grid-rows-7 gap-0" style={{ width: '3.2rem', height: '3.2rem' }}>
+      {CUPCAKE_PIXELS.flatMap((row, ri) =>
+        row.map((cell, ci) => (
+          <div key={`${ri}-${ci}`} style={{ backgroundColor: cell ? CUPCAKE_COLORS[cell] : 'transparent' }} />
+        )),
+      )}
+    </div>
+  )
+}
+
 function ClockCard() {
   const [now, setNow] = useState(new Date())
 
@@ -48,23 +79,24 @@ function ClockCard() {
 
   const hh = now.getHours().toString().padStart(2, '0')
   const mm = now.getMinutes().toString().padStart(2, '0')
-  const digits = [...hh, ...mm]
-  const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
+  const buddhistYear = now.getFullYear() + 543
+  const dateStr = `${buddhistYear}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getDate().toString().padStart(2, '0')}`
+  const weekday = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase()
 
   return (
-    <div className="flex aspect-[2/1] w-full flex-col items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-b from-pink-200 via-pink-100 to-rose-50 p-3 shadow-sm">
-      <p className="text-xs text-rose-400">🌙 Sweet dreams~</p>
-      <div className="flex gap-1">
-        {digits.map((d, i) => (
-          <span
-            key={i}
-            className={`flex h-7 w-5 items-center justify-center rounded-md bg-white/70 text-sm font-bold text-rose-900 shadow-inner ${i === 1 ? 'mr-1.5' : ''}`}
-          >
-            {d}
-          </span>
-        ))}
+    <div className="flex aspect-[2/1] w-full shrink-0 items-center justify-center gap-2 overflow-hidden rounded-2xl border border-gray-200 bg-white p-2 shadow-sm">
+      <PixelCupcake />
+      <div className="flex flex-col items-center gap-1">
+        <p className="font-pixel whitespace-nowrap text-3xl text-gray-900 sm:text-4xl">
+          {hh}
+          <span className="mx-0.5">:</span>
+          {mm}
+        </p>
+        <div className="flex items-center gap-2">
+          <span className="font-pixel truncate text-[7px] text-pink-300">{dateStr}</span>
+          <span className="font-pixel truncate text-[7px] text-pink-300">{weekday}</span>
+        </div>
       </div>
-      <p className="text-[10px] text-rose-400">{dateStr}</p>
     </div>
   )
 }
@@ -73,7 +105,7 @@ function MusicCard() {
   const [showNote, setShowNote] = useState(false)
 
   return (
-    <div className="flex aspect-[2/1] w-full flex-col justify-center rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+    <div className="flex aspect-[2/1] w-full shrink-0 flex-col justify-center rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
       <div className="flex items-center gap-2.5">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-pink-100 text-lg">🎵</div>
         <div className="min-w-0 flex-1">
@@ -279,8 +311,8 @@ function FamilyCard() {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="group/cover relative h-40 w-full bg-gradient-to-br from-pink-100 to-pink-50">
+    <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="group/cover relative h-40 w-full shrink-0 bg-gradient-to-br from-pink-100 to-pink-50">
         <input
           ref={coverFileRef}
           type="file"
@@ -301,8 +333,8 @@ function FamilyCard() {
         </button>
       </div>
 
-      <div className="p-4">
-        <div className="mb-3 flex items-center justify-between">
+      <div className="flex min-h-0 flex-1 flex-col p-4">
+        <div className="mb-3 flex shrink-0 items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-700">Family 🤍˚ʚ🧸ɞ˚☁️</h3>
           <button
             onClick={() => setModalTarget('new')}
@@ -318,7 +350,7 @@ function FamilyCard() {
       ) : members.length === 0 ? (
         <p className="text-xs text-gray-400">No family members yet.</p>
       ) : (
-        <div ref={listRef} onScroll={updateScrollState} className="flex max-h-[350px] flex-col gap-2 overflow-y-auto pr-1">
+        <div ref={listRef} onScroll={updateScrollState} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
           {members.map((m) => {
             const days = daysUntilBirthday(m.birthday)
             return (
@@ -527,7 +559,7 @@ function SlideshowCard() {
   }
 
   return (
-    <div className="group relative aspect-square w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
+    <div className="group relative h-full w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
       {loading ? null : images.length === 0 ? (
         <button
           onClick={() => setManagerOpen(true)}
@@ -643,20 +675,26 @@ function PetWidget() {
             e.target.value = ''
           }}
         />
-        <button
-          title={petGif ? 'Change pet GIF' : 'Upload a pet GIF'}
-          onClick={() => fileRef.current?.click()}
-          className="flex h-16 w-16 flex-col items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-gray-300 bg-white/90 text-gray-400 shadow-sm hover:border-pink-400 hover:text-pink-500"
-        >
-          {loading ? null : petGif ? (
-            <img src={petGif} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <>
-              <span className="text-lg leading-none">+</span>
+        <div className="flex flex-col items-center gap-2">
+          <button
+            title={petGif ? 'Change pet GIF' : 'Upload a pet GIF'}
+            onClick={() => fileRef.current?.click()}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-pink-400 text-white shadow-sm hover:bg-pink-500"
+          >
+            <span className="text-sm leading-none">+</span>
+          </button>
+          <button
+            title={petGif ? 'Change pet GIF' : 'Upload a pet GIF'}
+            onClick={() => fileRef.current?.click()}
+            className="flex h-16 w-16 flex-col items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-gray-300 bg-white/90 text-gray-400 shadow-sm hover:border-pink-400 hover:text-pink-500"
+          >
+            {loading ? null : petGif ? (
+              <img src={petGif} alt="" className="h-full w-full object-cover" />
+            ) : (
               <span className="text-[9px] leading-tight">Pet GIF</span>
-            </>
-          )}
-        </button>
+            )}
+          </button>
+        </div>
       </div>
 
       <style>{`
@@ -677,18 +715,31 @@ function PetWidget() {
 }
 
 export default function Dashboard() {
+  const referenceRef = useRef<HTMLDivElement>(null)
+  const [referenceHeight, setReferenceHeight] = useState<number | null>(null)
+
+  useEffect(() => {
+    const el = referenceRef.current
+    if (!el) return
+    const observer = new ResizeObserver((entries) => {
+      setReferenceHeight(entries[0].contentRect.height)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-semibold">Dashboard</h2>
+      <h2 className="text-xl font-semibold">𐔌 Buddy Home ˚.🎀༘⋆</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-        <div className="flex flex-col gap-4 sm:col-span-1">
+        <div ref={referenceRef} className="flex flex-col gap-4 self-start sm:col-span-1">
           <ClockCard />
           <MusicCard />
         </div>
-        <div className="sm:col-span-1">
+        <div className="min-h-0 sm:col-span-1" style={referenceHeight ? { height: referenceHeight } : undefined}>
           <SlideshowCard />
         </div>
-        <div className="sm:col-span-2">
+        <div className="min-h-0 sm:col-span-2" style={referenceHeight ? { height: referenceHeight } : undefined}>
           <FamilyCard />
         </div>
       </div>
