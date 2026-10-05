@@ -260,7 +260,7 @@ export default function TodoProjectDetail() {
 
     return {
       x: Math.min(90, Math.max(0, ((clientX - rect.left) / rect.width) * 100)),
-      y: Math.min(90, Math.max(0, ((clientY - rect.top) / rect.height) * 100)),
+      y: Math.max(0, ((clientY - rect.top) / rect.height) * 100),
     };
   }
 
@@ -435,7 +435,8 @@ export default function TodoProjectDetail() {
   }
 
   return (
-    <div>
+    // Bottom padding leaves room to drag stickers below the content.
+    <div className="pb-64">
       <input
         ref={addImageInputRef}
         type="file"
@@ -525,6 +526,7 @@ export default function TodoProjectDetail() {
               onTextPosition={noop}
               onTextCommit={noop}
               onTextDelete={noop}
+              unboundedY
             />
           </div>
         </div>

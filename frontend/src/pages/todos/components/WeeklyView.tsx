@@ -18,7 +18,7 @@ export default function WeeklyView({
         <span className="text-lg text-gray-500">📄</span>
 
         <h2
-          className="text-[18px] font-medium text-[#3f3a3b]"
+          className="text-[1.125rem] font-medium text-[#3f3a3b]"
         >
           Weekly view
         </h2>
@@ -61,7 +61,7 @@ export default function WeeklyView({
                     truncate
                     px-2
                     py-0.5
-                    text-[15px]
+                    text-[0.9375rem]
                     font-medium
                     ${
                       isPinkColumn
@@ -76,7 +76,7 @@ export default function WeeklyView({
                 <span
                   className={`
                     shrink-0
-                    text-[14px]
+                    text-[0.875rem]
                     ${
                       isPinkColumn
                         ? "text-[#d99aae]"
@@ -95,8 +95,8 @@ export default function WeeklyView({
                     key={todo.id}
                     className="
                       min-w-0
-                      min-h-[92px]
-                      rounded-[14px]
+                      min-h-[5.75rem]
+                      rounded-[0.875rem]
                       border
                       border-[#eee9ea]
                       bg-white
@@ -117,7 +117,7 @@ export default function WeeklyView({
                           min-w-0
                           flex-1
                           truncate
-                          text-[15px]
+                          text-[0.9375rem]
                           font-medium
                           ${
                             todo.isDone
@@ -133,7 +133,7 @@ export default function WeeklyView({
                     <div
                       className={`
                         mt-6
-                        text-[12px]
+                        text-[0.75rem]
                         font-semibold
                         ${
                           todo.isDone

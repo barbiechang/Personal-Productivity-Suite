@@ -51,7 +51,7 @@ export default function ProjectDescriptionCard({
               rows={5}
               placeholder="💬 Add comment..."
               className="
-                min-h-[164px]
+                min-h-[10.25rem]
                 w-full
                 resize-y
                 rounded-sm
@@ -61,7 +61,7 @@ export default function ProjectDescriptionCard({
                 px-5
                 py-4
                 font-serif
-                text-[15px]
+                text-[0.9375rem]
                 italic
                 leading-7
                 text-gray-600
@@ -121,7 +121,7 @@ export default function ProjectDescriptionCard({
               onClick={onOpenPopup}
               className="
                 block
-                min-h-[88px]
+                min-h-[5.5rem]
                 w-full
                 overflow-hidden
                 rounded-sm
@@ -149,7 +149,7 @@ export default function ProjectDescriptionCard({
                   [-webkit-box-orient:vertical]
                   [-webkit-line-clamp:5]
                   font-serif
-                  text-[15px]
+                  text-[0.9375rem]
                   italic
                   leading-7
                   text-gray-600
@@ -194,7 +194,7 @@ export default function ProjectDescriptionCard({
             onClick={onStartEdit}
             className="
               block
-              min-h-[88px]
+              min-h-[5.5rem]
               w-full
               rounded-sm
               border
@@ -204,7 +204,7 @@ export default function ProjectDescriptionCard({
               py-4
               text-left
               font-serif
-              text-[15px]
+              text-[0.9375rem]
               italic
               text-gray-400
               shadow-[0_1px_4px_rgba(0,0,0,0.05)]

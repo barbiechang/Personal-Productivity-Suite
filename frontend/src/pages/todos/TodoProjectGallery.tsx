@@ -286,13 +286,13 @@ function ProjectCard({
           {project.name} ⋆𐙚 ̊.
         </p>
         {duration && (
-          <p className="truncate text-[11px] text-gray-400">{duration}</p>
+          <p className="truncate text-[0.6875rem] text-gray-400">{duration}</p>
         )}
-        <p className="text-[11px] text-gray-400">
+        <p className="text-[0.6875rem] text-gray-400">
           {project.todoCount} task{project.todoCount === 1 ? "" : "s"}
         </p>
         <div className="mt-0.5 flex items-center gap-2">
-          <span className="text-[11px] text-gray-500">{percent}%</span>
+          <span className="text-[0.6875rem] text-gray-500">{percent}%</span>
           <div className="h-1 flex-1 rounded-full bg-gray-100">
             <div
               className="h-full rounded-full bg-pink-400 transition-all"
@@ -428,7 +428,7 @@ export default function TodoProjectGallery() {
         )}
         <button
           onClick={() => pickCover({ type: "banner" })}
-          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[11px] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/banner:opacity-100"
+          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[0.6875rem] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/banner:opacity-100"
         >
           Change banner
         </button>
@@ -445,7 +445,7 @@ export default function TodoProjectGallery() {
           ) : (
             <span className="text-5xl leading-none">🐰</span>
           )}
-          <span className="absolute -bottom-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] text-gray-600 opacity-0 shadow-sm group-hover/icon:opacity-100">
+          <span className="absolute -bottom-1 rounded-full bg-white/90 px-2 py-0.5 text-[0.5625rem] text-gray-600 opacity-0 shadow-sm group-hover/icon:opacity-100">
             Change
           </span>
         </button>

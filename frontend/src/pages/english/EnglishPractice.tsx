@@ -116,7 +116,7 @@ function PracticeMode({ words, onMarkLearned }: { words: VocabWordDto[]; onMarkL
             {current.exampleSentence && <p className="mt-2 text-sm italic text-gray-500">{current.exampleSentence}</p>}
           </div>
         )}
-        <p className="mt-3 text-[11px] text-gray-300">{revealed ? 'click to hide' : 'click to reveal'}</p>
+        <p className="mt-3 text-[0.6875rem] text-gray-300">{revealed ? 'click to hide' : 'click to reveal'}</p>
       </div>
       <div className="flex gap-2">
         <button

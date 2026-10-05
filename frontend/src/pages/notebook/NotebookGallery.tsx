@@ -295,7 +295,7 @@ export default function NotebookGallery() {
         <div className={GRID_CLASS}>
           <button
             onClick={createNotebook}
-            className="flex min-h-[190px] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-pink-400 hover:text-pink-500"
+            className="flex min-h-[11.875rem] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-pink-400 hover:text-pink-500"
           >
             <span className="text-3xl leading-none">+</span>
             <span className="text-sm">New</span>

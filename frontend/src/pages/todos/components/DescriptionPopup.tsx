@@ -76,7 +76,7 @@ export default function DescriptionPopup({
               whitespace-pre-wrap
               break-words
               font-serif
-              text-[16px]
+              text-[1rem]
               italic
               leading-8
               text-gray-600

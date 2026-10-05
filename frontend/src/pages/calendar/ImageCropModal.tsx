@@ -221,7 +221,7 @@ export default function ImageCropModal({
               <button
                 key={s}
                 onClick={() => setShape(s)}
-                className={`rounded-md border px-2 py-1 text-[11px] capitalize ${
+                className={`rounded-md border px-2 py-1 text-[0.6875rem] capitalize ${
                   shape === s ? 'border-pink-400 bg-pink-50 text-pink-600' : 'border-gray-200 text-gray-500'
                 }`}
               >
@@ -233,13 +233,13 @@ export default function ImageCropModal({
 
         {mode === 'cutout' && (
           <div className="mb-3">
-            <p className="mb-1 text-center text-[11px] text-gray-500">Click background areas on the image to erase them</p>
-            <label className="flex items-center justify-center gap-2 text-[11px] text-gray-500">
+            <p className="mb-1 text-center text-[0.6875rem] text-gray-500">Click background areas on the image to erase them</p>
+            <label className="flex items-center justify-center gap-2 text-[0.6875rem] text-gray-500">
               Tolerance
               <input type="range" min={5} max={100} value={tolerance} onChange={(e) => setTolerance(Number(e.target.value))} />
             </label>
             <div className="flex justify-center">
-              <button onClick={redraw} className="mt-1 text-[11px] text-pink-500 hover:underline">
+              <button onClick={redraw} className="mt-1 text-[0.6875rem] text-pink-500 hover:underline">
                 Reset
               </button>
             </div>

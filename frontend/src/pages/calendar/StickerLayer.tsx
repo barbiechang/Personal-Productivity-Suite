@@ -19,10 +19,21 @@ export interface TextBoxLike {
   color: string
 }
 
+function scrollParentOf(el: HTMLElement | null): HTMLElement | null {
+  let node = el?.parentElement ?? null
+  while (node) {
+    const { overflowY } = getComputedStyle(node)
+    if ((overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight) return node
+    node = node.parentElement
+  }
+  return null
+}
+
 function useContainerDrag(
   containerRef: RefObject<HTMLDivElement | null>,
   start: { x: number; y: number },
   onCommit: (x: number, y: number) => void,
+  unboundedY = false,
 ) {
   const posRef = useRef(start)
   const [pos, setPos] = useState(start)
@@ -30,28 +41,57 @@ function useContainerDrag(
   function startDrag(e: React.MouseEvent) {
     e.stopPropagation()
     e.preventDefault()
-    const rect = containerRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const startClientX = e.clientX
-    const startClientY = e.clientY
-    const startX = posRef.current.x
-    const startY = posRef.current.y
+    const container = containerRef.current
+    const rect = container?.getBoundingClientRect()
+    if (!container || !rect) return
+    // Offset between the cursor and the item's top-left corner, in px.
+    const grabX = e.clientX - (rect.left + (posRef.current.x / 100) * rect.width)
+    const grabY = e.clientY - (rect.top + (posRef.current.y / 100) * rect.height)
+    let lastX = e.clientX
+    let lastY = e.clientY
+    let frame = 0
 
-    function onMove(ev: MouseEvent) {
-      const dxPct = ((ev.clientX - startClientX) / rect!.width) * 100
-      const dyPct = ((ev.clientY - startClientY) / rect!.height) * 100
+    function update() {
+      // Re-measure every time so page scrolling during the drag is accounted for.
+      const r = container!.getBoundingClientRect()
+      const x = ((lastX - grabX - r.left) / r.width) * 100
+      const y = ((lastY - grabY - r.top) / r.height) * 100
       const next = {
-        x: Math.min(96, Math.max(0, startX + dxPct)),
-        y: Math.min(96, Math.max(0, startY + dyPct)),
+        x: Math.min(96, Math.max(0, x)),
+        y: unboundedY ? Math.max(0, y) : Math.min(96, Math.max(0, y)),
       }
       posRef.current = next
       setPos(next)
     }
+
+    function autoScroll() {
+      const scroller = scrollParentOf(container)
+      if (scroller) {
+        const bounds = scroller.getBoundingClientRect()
+        const edge = 48
+        let dy = 0
+        if (lastY > bounds.bottom - edge) dy = Math.ceil((lastY - (bounds.bottom - edge)) / 3)
+        else if (lastY < bounds.top + edge) dy = -Math.ceil((bounds.top + edge - lastY) / 3)
+        if (dy !== 0) {
+          scroller.scrollTop += dy
+          update()
+        }
+      }
+      frame = requestAnimationFrame(autoScroll)
+    }
+
+    function onMove(ev: MouseEvent) {
+      lastX = ev.clientX
+      lastY = ev.clientY
+      update()
+    }
     function onUp() {
+      cancelAnimationFrame(frame)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseup', onUp)
       onCommit(posRef.current.x, posRef.current.y)
     }
+    if (unboundedY) frame = requestAnimationFrame(autoScroll)
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mouseup', onUp)
   }
@@ -65,14 +105,16 @@ function Sticker({
   onCommitPosition,
   onCommitSize,
   onDelete,
+  unboundedY,
 }: {
   sticker: StickerLike
   containerRef: RefObject<HTMLDivElement | null>
   onCommitPosition: (id: string, x: number, y: number) => void
   onCommitSize: (id: string, w: number, h: number) => void
   onDelete: (id: string) => void
+  unboundedY?: boolean
 }) {
-  const { pos, startDrag } = useContainerDrag(containerRef, { x: sticker.x, y: sticker.y }, (x, y) => onCommitPosition(sticker.id, x, y))
+  const { pos, startDrag } = useContainerDrag(containerRef, { x: sticker.x, y: sticker.y }, (x, y) => onCommitPosition(sticker.id, x, y), unboundedY)
   const sizeRef = useRef({ w: sticker.width, h: sticker.height })
   const [size, setSize] = useState(sizeRef.current)
 
@@ -124,7 +166,7 @@ function Sticker({
           e.stopPropagation()
           onDelete(sticker.id)
         }}
-        className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-[16px] text-gray-400 shadow group-hover/sticker:flex"
+        className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-[1rem] text-gray-400 shadow group-hover/sticker:flex"
       >
         ×
       </button>
@@ -189,7 +231,7 @@ function TextBoxItem({
           e.stopPropagation()
           onDelete(box.id)
         }}
-        className="absolute -right-4 -top-2 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-[14px] text-gray-400 shadow group-hover/text:flex"
+        className="absolute -right-4 -top-2 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-[0.875rem] text-gray-400 shadow group-hover/text:flex"
       >
         ×
       </button>
@@ -207,6 +249,7 @@ export default function StickerLayer({
   onTextPosition,
   onTextCommit,
   onTextDelete,
+  unboundedY = false,
 }: {
   containerRef: RefObject<HTMLDivElement | null>
   stickers: StickerLike[]
@@ -217,11 +260,13 @@ export default function StickerLayer({
   onTextPosition: (id: string, x: number, y: number) => void
   onTextCommit: (id: string, text: string) => void
   onTextDelete: (id: string) => void
+  /** Let stickers be dragged below the container (the page scrolls to follow). */
+  unboundedY?: boolean
 }) {
   return (
     <>
       {stickers.map((s) => (
-        <Sticker key={s.id} sticker={s} containerRef={containerRef} onCommitPosition={onStickerPosition} onCommitSize={onStickerSize} onDelete={onStickerDelete} />
+        <Sticker key={s.id} sticker={s} containerRef={containerRef} onCommitPosition={onStickerPosition} onCommitSize={onStickerSize} onDelete={onStickerDelete} unboundedY={unboundedY} />
       ))}
       {textBoxes.map((b) => (
         <TextBoxItem key={b.id} box={b} containerRef={containerRef} onCommitPosition={onTextPosition} onCommitText={onTextCommit} onDelete={onTextDelete} />

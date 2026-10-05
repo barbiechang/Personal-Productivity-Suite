@@ -93,8 +93,8 @@ function ClockCard() {
           {mm}
         </p>
         <div className="flex items-center gap-2">
-          <span className="font-pixel truncate text-[7px] text-pink-300">{dateStr}</span>
-          <span className="font-pixel truncate text-[7px] text-pink-300">{weekday}</span>
+          <span className="font-pixel truncate text-[0.4375rem] text-pink-300">{dateStr}</span>
+          <span className="font-pixel truncate text-[0.4375rem] text-pink-300">{weekday}</span>
         </div>
       </div>
     </div>
@@ -110,19 +110,19 @@ function MusicCard() {
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-pink-100 text-lg">🎵</div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-semibold text-gray-800">Not connected</p>
-          <p className="truncate text-[10px] text-gray-400">Connect Spotify to see your playlist</p>
+          <p className="truncate text-[0.625rem] text-gray-400">Connect Spotify to see your playlist</p>
         </div>
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10px] text-gray-400">▶</span>
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[0.625rem] text-gray-400">▶</span>
       </div>
 
       <button
         onClick={() => setShowNote(true)}
-        className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-[10px] font-medium text-white hover:bg-green-600"
+        className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-[0.625rem] font-medium text-white hover:bg-green-600"
       >
         Save on Spotify
       </button>
 
-      {showNote && <p className="mt-1 truncate text-[9px] text-gray-400">Coming soon — needs a Spotify Developer App client ID first.</p>}
+      {showNote && <p className="mt-1 truncate text-[0.5625rem] text-gray-400">Coming soon — needs a Spotify Developer App client ID first.</p>}
     </div>
   )
 }
@@ -327,7 +327,7 @@ function FamilyCard() {
         {cover && <img src={cover} alt="" className="h-full w-full object-cover" />}
         <button
           onClick={() => coverFileRef.current?.click()}
-          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[11px] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/cover:opacity-100"
+          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[0.6875rem] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/cover:opacity-100"
         >
           Change cover
         </button>
@@ -362,11 +362,11 @@ function FamilyCard() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium text-gray-800">{m.name}</p>
                   <div className="mt-0.5 flex flex-wrap items-center gap-1">
-                    {m.role && <span className="rounded-full bg-pink-50 px-1.5 py-0.5 text-[9px] font-medium text-pink-600">{m.role}</span>}
-                    <span className="text-[10px] text-gray-400">{formatBirthday(m.birthday)}</span>
+                    {m.role && <span className="rounded-full bg-pink-50 px-1.5 py-0.5 text-[0.5625rem] font-medium text-pink-600">{m.role}</span>}
+                    <span className="text-[0.625rem] text-gray-400">{formatBirthday(m.birthday)}</span>
                   </div>
                   <span
-                    className={`mt-0.5 inline-block rounded-full px-1.5 py-0.5 text-[9px] font-medium ${
+                    className={`mt-0.5 inline-block rounded-full px-1.5 py-0.5 text-[0.5625rem] font-medium ${
                       days === 0 ? 'bg-pink-100 text-pink-600' : 'bg-gray-100 text-gray-500'
                     }`}
                   >
@@ -413,7 +413,7 @@ function FamilyCard() {
       {canScrollUp && (
         <button
           onClick={() => scrollBy(-160)}
-          className="absolute left-1/2 top-[132px] flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-xs text-gray-500 shadow-sm hover:bg-gray-50"
+          className="absolute left-1/2 top-[8.25rem] flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-xs text-gray-500 shadow-sm hover:bg-gray-50"
         >
           ▲
         </button>
@@ -500,7 +500,7 @@ function PhotoManagerModal({
                 <img src={img.dataUrl} alt="" className="h-full w-full object-cover" />
                 <button
                   onClick={() => onDelete(img.id)}
-                  className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-gray-300 text-[10px] text-white opacity-0 shadow-sm group-hover:opacity-100"
+                  className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-gray-300 text-[0.625rem] text-white opacity-0 shadow-sm group-hover:opacity-100"
                 >
                   ✕
                 </button>
@@ -691,7 +691,7 @@ function PetWidget() {
             {loading ? null : petGif ? (
               <img src={petGif} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-[9px] leading-tight">Pet GIF</span>
+              <span className="text-[0.5625rem] leading-tight">Pet GIF</span>
             )}
           </button>
         </div>

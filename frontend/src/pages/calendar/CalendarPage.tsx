@@ -172,7 +172,7 @@ export default function CalendarPage() {
         {banner.calendarBannerDataUrl && <img src={banner.calendarBannerDataUrl} alt="" className="h-full w-full object-cover" />}
         <button
           onClick={() => pickCover({ type: 'banner' })}
-          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[11px] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/banner:opacity-100"
+          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[0.6875rem] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/banner:opacity-100"
         >
           Change banner
         </button>
@@ -185,7 +185,7 @@ export default function CalendarPage() {
           ) : (
             <span className="text-5xl leading-none">🗓️</span>
           )}
-          <span className="absolute -bottom-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] text-gray-600 opacity-0 shadow-sm group-hover/icon:opacity-100">
+          <span className="absolute -bottom-1 rounded-full bg-white/90 px-2 py-0.5 text-[0.5625rem] text-gray-600 opacity-0 shadow-sm group-hover/icon:opacity-100">
             Change
           </span>
         </button>
@@ -227,13 +227,13 @@ export default function CalendarPage() {
               return (
                 <div
                   key={d.toISOString()}
-                  className={`min-h-[100px] p-2 text-sm ${inMonth ? 'text-gray-900' : 'text-gray-300'} ${
+                  className={`min-h-[6.25rem] p-2 text-sm ${inMonth ? 'text-gray-900' : 'text-gray-300'} ${
                     holiday && inMonth ? 'bg-pink-50/70' : 'bg-white'
                   } ${highlightDay && isSameDay(d, highlightDay) ? 'ring-2 ring-inset ring-pink-300' : ''}`}
                 >
                   <span>{format(d, 'd')}</span>
                   {holiday && (
-                    <span className={`mt-0.5 block truncate text-[9px] leading-tight ${inMonth ? 'text-gray-500' : 'text-gray-300'}`}>{holiday.name}</span>
+                    <span className={`mt-0.5 block truncate text-[0.5625rem] leading-tight ${inMonth ? 'text-gray-500' : 'text-gray-300'}`}>{holiday.name}</span>
                   )}
                 </div>
               )

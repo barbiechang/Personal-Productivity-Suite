@@ -160,7 +160,7 @@ export default function TripDetail() {
         {trip.coverDataUrl && <img src={trip.coverDataUrl} alt="" className="h-full w-full object-cover" />}
         <button
           onClick={() => coverInputRef.current?.click()}
-          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[11px] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/cover:opacity-100"
+          className="absolute bottom-2 right-2 rounded-md bg-white/90 px-2 py-1 text-[0.6875rem] text-gray-600 opacity-0 shadow-sm hover:bg-white group-hover/cover:opacity-100"
         >
           Change cover
         </button>

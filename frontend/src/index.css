@@ -15,6 +15,12 @@ body,
   height: 100%;
 }
 
+/* Scale the whole UI (everything is rem-based) up on large screens:
+   16px up to 1536px wide, ~20px at 2560px (27" 1440p), capped at 24px. */
+html {
+  font-size: clamp(16px, calc(16px + (100vw - 1536px) * 0.0039), 24px);
+}
+
 body {
   margin: 0;
   font-family: "Libertinus Serif", Georgia, "Times New Roman", serif;

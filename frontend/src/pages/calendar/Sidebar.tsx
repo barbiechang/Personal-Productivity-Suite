@@ -34,7 +34,7 @@ function ChecklistWidget({ year, month, kind, title }: { year: number; month: nu
 
   return (
     <div className="mb-5">
-      <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">{title}</h3>
+      <h3 className="mb-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-500">{title}</h3>
       <div className="mb-2 flex gap-1">
         <input
           value={draft}
@@ -54,7 +54,7 @@ function ChecklistWidget({ year, month, kind, title }: { year: number; month: nu
             <span className={`flex-1 ${item.isDone ? 'text-gray-400 line-through' : ''}`}>{item.text}</span>
             <button
               onClick={() => remove(item.id)}
-              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white text-[10px] leading-none text-pink-300 opacity-0 hover:text-pink-500 group-hover:opacity-100"
+              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white text-[0.625rem] leading-none text-pink-300 opacity-0 hover:text-pink-500 group-hover:opacity-100"
             >
               ×
             </button>
@@ -87,7 +87,7 @@ function NotesWidget({ year, month }: { year: number; month: number }) {
 
   return (
     <div className="mb-5">
-      <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">Notes</h3>
+      <h3 className="mb-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-500">Notes</h3>
       <div className="mb-2 flex gap-1">
         <input
           value={draft}
@@ -110,7 +110,7 @@ function NotesWidget({ year, month }: { year: number; month: number }) {
             {item.text}
             <button
               onClick={() => remove(item.id)}
-              className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] leading-none text-pink-300 opacity-0 shadow-sm hover:text-pink-500 group-hover:opacity-100"
+              className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[0.625rem] leading-none text-pink-300 opacity-0 shadow-sm hover:text-pink-500 group-hover:opacity-100"
             >
               ×
             </button>
@@ -225,7 +225,7 @@ export default function Sidebar({
 
       <div className="mb-5 grid grid-cols-7 gap-0.5 rounded-lg bg-white p-2 text-center">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-          <span key={i} className="text-[9px] text-gray-400">
+          <span key={i} className="text-[0.5625rem] text-gray-400">
             {d}
           </span>
         ))}
@@ -236,7 +236,7 @@ export default function Sidebar({
               key={d.toISOString()}
               onClick={() => onHighlightDay(d)}
               title={holiday?.name}
-              className={`relative rounded-full text-[9px] leading-5 ${
+              className={`relative rounded-full text-[0.5625rem] leading-5 ${
                 !isSameMonth(d, month) ? 'text-gray-300' : isToday(d) ? 'bg-pink-400 text-white' : 'text-gray-600 hover:bg-pink-50'
               } ${highlightDay && isSameDay(d, highlightDay) ? 'ring-1 ring-pink-400' : ''}`}
             >

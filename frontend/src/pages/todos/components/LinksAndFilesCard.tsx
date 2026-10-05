@@ -14,7 +14,7 @@ export default function LinksAndFilesCard({
       {/* Header */}
       <div className="bg-[#fff4f7] px-3 py-1.5">
         <h3
-          className="text-[15px] font-semibold italic text-[#4b4345]"
+          className="text-[0.9375rem] font-semibold italic text-[#4b4345]"
         >
           links & files
         </h3>
@@ -28,7 +28,7 @@ export default function LinksAndFilesCard({
             className="
               group
               flex
-              min-h-[26px]
+              min-h-[1.625rem]
               items-center
               gap-2
               py-0.5
@@ -38,12 +38,12 @@ export default function LinksAndFilesCard({
             <span
               className="
                 flex
-                h-[14px]
-                w-[14px]
+                h-[0.875rem]
+                w-[0.875rem]
                 shrink-0
                 items-center
                 justify-center
-                text-[11px]
+                text-[0.6875rem]
                 text-[#555]
               "
             >
@@ -63,7 +63,7 @@ export default function LinksAndFilesCard({
               className="
                 flex-1
                 truncate
-                text-[13px]
+                text-[0.8125rem]
                 leading-5
                 text-[#4b4546]
                 hover:underline
@@ -78,7 +78,7 @@ export default function LinksAndFilesCard({
               onClick={() => onDelete(resource.id)}
               className="
                 invisible
-                text-[10px]
+                text-[0.625rem]
                 text-gray-400
                 transition
                 hover:text-red-500
