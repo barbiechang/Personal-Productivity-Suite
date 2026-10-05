@@ -7,19 +7,20 @@ const NOTEBOOK_DRAG_TYPE = 'application/x-notebook-id'
 
 function FolderShape({ folder }: { folder: FolderDto }) {
   const clipId = `folder-clip-${folder.id}`
+  // 100x75 matches the 4:3 card, so the folder fills it edge to edge.
   return (
-    <svg viewBox="0 0 100 76" className="h-full w-full drop-shadow">
+    <svg viewBox="0 0 100 75" className="h-full w-full drop-shadow">
       <defs>
         <clipPath id={clipId}>
-          <rect x="2" y="8" width="42" height="16" rx="4" />
-          <rect x="2" y="16" width="96" height="60" rx="6" />
+          <rect x="0" y="0" width="42" height="16" rx="4" />
+          <rect x="0" y="8" width="100" height="67" rx="6" />
         </clipPath>
       </defs>
       <g clipPath={`url(#${clipId})`}>
         {folder.coverDataUrl ? (
-          <image href={folder.coverDataUrl} x="0" y="0" width="100" height="76" preserveAspectRatio="xMidYMid slice" />
+          <image href={folder.coverDataUrl} x="0" y="0" width="100" height="75" preserveAspectRatio="xMidYMid slice" />
         ) : (
-          <rect x="0" y="0" width="100" height="76" fill="#f7c5d8" />
+          <rect x="0" y="0" width="100" height="75" fill="#f7c5d8" />
         )}
       </g>
     </svg>

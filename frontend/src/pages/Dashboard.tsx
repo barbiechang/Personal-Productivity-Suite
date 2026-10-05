@@ -595,16 +595,31 @@ function SlideshowCard() {
 }
 
 const PET_POSITION_KEY = 'dashboard:petPosition'
+const PET_SPEED = 70 // px per second
+const PET_RESUME_DELAY = 3000 // ms to wait after being dropped
+
+type Point = { x: number; y: number }
+
+function initialPetPosition(): Point {
+  try {
+    const saved = localStorage.getItem(PET_POSITION_KEY)
+    if (saved) return JSON.parse(saved)
+  } catch {
+    // ignore corrupt or blocked storage
+  }
+  return { x: window.innerWidth * 0.05, y: window.innerHeight - 120 }
+}
 
 function PetWidget() {
   const [petGif, setPetGif] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(() => {
-    const saved = localStorage.getItem(PET_POSITION_KEY)
-    return saved ? JSON.parse(saved) : null
-  })
   const fileRef = useRef<HTMLInputElement>(null)
   const spriteRef = useRef<HTMLImageElement>(null)
+  // Position lives in refs and is written straight to the DOM each frame.
+  const posRef = useRef<Point>(initialPetPosition())
+  const facingRef = useRef(1)
+  const targetRef = useRef<Point | null>(null)
+  const pauseUntilRef = useRef(0)
   const draggingRef = useRef(false)
   const dragOffsetRef = useRef({ x: 0, y: 0 })
 
@@ -614,6 +629,53 @@ function PetWidget() {
       .then((res) => setPetGif(res.data.petGifDataUrl))
       .finally(() => setLoading(false))
   }, [])
+
+  function applyPosition() {
+    const el = spriteRef.current
+    if (!el) return
+    const { x, y } = posRef.current
+    el.style.transform = `translate(${x}px, ${y}px) scaleX(${facingRef.current})`
+  }
+
+  // Wander to random spots anywhere on screen, resting briefly at each one.
+  useEffect(() => {
+    if (!petGif) return
+    let frame = 0
+    let last = performance.now()
+
+    function tick(now: number) {
+      const dt = Math.min(now - last, 50) / 1000
+      last = now
+      const el = spriteRef.current
+      if (el && !draggingRef.current && now >= pauseUntilRef.current) {
+        const maxX = Math.max(0, window.innerWidth - el.offsetWidth)
+        const maxY = Math.max(0, window.innerHeight - el.offsetHeight)
+        const p = posRef.current
+        p.x = Math.min(maxX, Math.max(0, p.x))
+        p.y = Math.min(maxY, Math.max(0, p.y))
+
+        const target = (targetRef.current ??= { x: Math.random() * maxX, y: Math.random() * maxY })
+        const dx = target.x - p.x
+        const dy = target.y - p.y
+        const dist = Math.hypot(dx, dy)
+        const step = PET_SPEED * dt
+        if (dist <= step) {
+          posRef.current = { ...target }
+          targetRef.current = null
+          pauseUntilRef.current = now + 500 + Math.random() * 1500
+        } else {
+          posRef.current = { x: p.x + (dx / dist) * step, y: p.y + (dy / dist) * step }
+          if (Math.abs(dx) > 1) facingRef.current = dx > 0 ? 1 : -1
+        }
+        applyPosition()
+      }
+      frame = requestAnimationFrame(tick)
+    }
+
+    applyPosition()
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [petGif])
 
   function handleFile(file: File) {
     const reader = new FileReader()
@@ -626,25 +688,28 @@ function PetWidget() {
   }
 
   function onPointerDown(e: React.PointerEvent<HTMLImageElement>) {
-    const rect = spriteRef.current!.getBoundingClientRect()
-    dragOffsetRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
-    if (!pos) setPos({ x: rect.left, y: rect.top })
+    dragOffsetRef.current = { x: e.clientX - posRef.current.x, y: e.clientY - posRef.current.y }
     draggingRef.current = true
     e.currentTarget.setPointerCapture(e.pointerId)
   }
 
   function onPointerMove(e: React.PointerEvent<HTMLImageElement>) {
     if (!draggingRef.current) return
-    setPos({ x: e.clientX - dragOffsetRef.current.x, y: e.clientY - dragOffsetRef.current.y })
+    posRef.current = { x: e.clientX - dragOffsetRef.current.x, y: e.clientY - dragOffsetRef.current.y }
+    applyPosition()
   }
 
   function onPointerUp() {
     if (!draggingRef.current) return
     draggingRef.current = false
-    setPos((p) => {
-      if (p) localStorage.setItem(PET_POSITION_KEY, JSON.stringify(p))
-      return p
-    })
+    // Stay put for a moment, then wander off from the drop spot.
+    targetRef.current = null
+    pauseUntilRef.current = performance.now() + PET_RESUME_DELAY
+    try {
+      localStorage.setItem(PET_POSITION_KEY, JSON.stringify(posRef.current))
+    } catch {
+      // ignore blocked storage
+    }
   }
 
   return (
@@ -658,8 +723,9 @@ function PetWidget() {
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
-          className={`pet-hover-zone fixed z-40 h-20 w-20 cursor-grab select-none object-contain ${pos ? '' : 'pet-roam'}`}
-          style={pos ? { left: pos.x, top: pos.y } : undefined}
+          onPointerCancel={onPointerUp}
+          className="pet-hover-zone fixed left-0 top-0 z-40 h-20 w-20 cursor-grab touch-none select-none object-contain"
+          style={{ transform: `translate(${posRef.current.x}px, ${posRef.current.y}px) scaleX(${facingRef.current})` }}
         />
       )}
 
@@ -698,14 +764,6 @@ function PetWidget() {
       </div>
 
       <style>{`
-        @keyframes pet-roam {
-          0% { left: 5vw; bottom: 24px; transform: scaleX(1); }
-          48% { left: 78vw; bottom: 24px; transform: scaleX(1); }
-          50% { left: 78vw; bottom: 24px; transform: scaleX(-1); }
-          98% { left: 5vw; bottom: 24px; transform: scaleX(-1); }
-          100% { left: 5vw; bottom: 24px; transform: scaleX(1); }
-        }
-        .pet-roam { animation: pet-roam 40s ease-in-out infinite; }
         .pet-hover-zone {
           cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath fill='%23f472b6' d='M12 21s-6.5-4.35-9.5-8.5C.5 9.5 1.5 5.5 5 4.5c2-.6 3.8.2 5 2 .2.3.5.3.7 0 1.2-1.8 3-2.6 5-2 3.5 1 4.5 5 2.5 8-3 4.15-9.5 8.5-9.5 8.5z'/%3E%3C/svg%3E") 14 14, grab;
         }

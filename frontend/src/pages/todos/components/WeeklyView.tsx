@@ -1,5 +1,16 @@
 import type { Todo } from "../../../types/todo";
 
+function formatDueDate(dueDate: string | null) {
+  if (!dueDate) return "";
+  // Due dates are stored as UTC midnight, so format in UTC to keep the day.
+  return new Date(dueDate).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 export default function WeeklyView({
   weekdayGroups,
 }: {
@@ -130,19 +141,29 @@ export default function WeeklyView({
                       </p>
                     </div>
 
-                    <div
-                      className={`
-                        mt-6
-                        text-[0.75rem]
-                        font-semibold
-                        ${
-                          todo.isDone
-                            ? "text-gray-400"
-                            : "text-[#5a5152]"
-                        }
-                      `}
-                    >
-                      {todo.isDone ? "Completed" : "Task"}
+                    <p className="mt-1 pl-7 text-[0.75rem] text-[#a3989a]">
+                      {formatDueDate(todo.dueDate)}
+                    </p>
+
+                    <div className="mt-4 flex min-w-0 items-center justify-between gap-2">
+                      <span className="truncate rounded-full bg-[#fff0f4] px-2 py-0.5 text-[0.6875rem] text-[#b5687f]">
+                        {todo.section || "General"}
+                      </span>
+
+                      <span
+                        className={`
+                          shrink-0
+                          text-[0.75rem]
+                          font-semibold
+                          ${
+                            todo.isDone
+                              ? "text-gray-400"
+                              : "text-[#5a5152]"
+                          }
+                        `}
+                      >
+                        {todo.isDone ? "Completed" : "Task"}
+                      </span>
                     </div>
                   </div>
                 ))}

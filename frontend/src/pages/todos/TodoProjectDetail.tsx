@@ -122,11 +122,17 @@ export default function TodoProjectDetail() {
 
       const day = new Date(todo.dueDate).toLocaleDateString("en-US", {
         weekday: "long",
+        timeZone: "UTC",
       });
 
       const list = map.get(day) ?? [];
       list.push(todo);
       map.set(day, list);
+    }
+
+    // Same weekday can hold several dates, so order each column by date.
+    for (const list of map.values()) {
+      list.sort((a, b) => Date.parse(a.dueDate!) - Date.parse(b.dueDate!));
     }
 
     return WEEKDAYS.map((day) => [day, map.get(day) ?? []] as const);
@@ -214,13 +220,13 @@ export default function TodoProjectDetail() {
   }
 
   async function addTodo() {
-    if (!newTitle.trim() || !projectId) return;
+    if (!newTitle.trim() || !newDueDate || !projectId) return;
 
     const res = await api.post<Todo>("/todos", {
       projectId,
       title: newTitle.trim(),
       section: newSection.trim() || "General",
-      dueDate: newDueDate ? `${newDueDate}T00:00:00Z` : null,
+      dueDate: `${newDueDate}T00:00:00Z`,
       priority: "medium",
     });
 
@@ -505,7 +511,7 @@ export default function TodoProjectDetail() {
           onAddLink={openLinkModal}
         />
 
-        <div className="mb-4 flex flex-col gap-4 sm:flex-row">
+        <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start">
           <TaskListCard todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
 
           <LinksAndFilesCard resources={resources} onDelete={deleteResource} />

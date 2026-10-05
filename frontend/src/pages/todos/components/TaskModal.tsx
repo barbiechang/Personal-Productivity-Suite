@@ -39,7 +39,7 @@ export default function TaskModal({
             value={title}
             onChange={(event) => onTitleChange(event.target.value)}
             onKeyDown={(event) => {
-              if (event.key === "Enter") onSubmit();
+              if (event.key === "Enter" && dueDate) onSubmit();
             }}
             placeholder="What needs to get done?"
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-pink-300"
@@ -63,9 +63,10 @@ export default function TaskModal({
         </label>
 
         <label className="mb-5 block text-xs text-gray-500">
-          Due date (optional)
+          Due date
           <input
             type="date"
+            required
             value={dueDate}
             onChange={(event) => onDueDateChange(event.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-pink-300"
@@ -84,7 +85,7 @@ export default function TaskModal({
           <button
             type="button"
             onClick={onSubmit}
-            disabled={!title.trim()}
+            disabled={!title.trim() || !dueDate}
             className="rounded-md bg-pink-500 px-4 py-2 text-sm font-medium text-white hover:bg-pink-600 disabled:opacity-40"
           >
             Add task

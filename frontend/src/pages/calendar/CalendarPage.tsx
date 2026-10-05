@@ -198,10 +198,10 @@ export default function CalendarPage() {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-xl font-semibold">{format(month, 'MMMM yyyy')}</h2>
             <div className="flex gap-2">
-              <button onClick={() => addImageInputRef.current?.click()} className="rounded-md border border-gray-300 px-3 py-1.5 text-xs hover:bg-gray-50">
+              <button onClick={() => addImageInputRef.current?.click()} className="rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50">
                 + Add image
               </button>
-              <button onClick={addTextBox} className="rounded-md border border-gray-300 px-3 py-1.5 text-xs hover:bg-gray-50">
+              <button onClick={addTextBox} className="rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50">
                 + Add text
               </button>
             </div>
@@ -209,7 +209,7 @@ export default function CalendarPage() {
 
           <div className="grid grid-cols-7 gap-px overflow-hidden rounded-t-md border border-gray-200 bg-gray-200">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-              <div key={d} className="bg-gray-50 px-2 py-1 text-center text-xs font-medium text-gray-500">
+              <div key={d} className="bg-gray-50 px-2 py-1.5 text-center text-sm font-medium text-gray-500">
                 {d}
               </div>
             ))}
@@ -227,13 +227,13 @@ export default function CalendarPage() {
               return (
                 <div
                   key={d.toISOString()}
-                  className={`min-h-[6.25rem] p-2 text-sm ${inMonth ? 'text-gray-900' : 'text-gray-300'} ${
+                  className={`min-h-[7rem] p-2 text-base ${inMonth ? 'text-gray-900' : 'text-gray-300'} ${
                     holiday && inMonth ? 'bg-pink-50/70' : 'bg-white'
                   } ${highlightDay && isSameDay(d, highlightDay) ? 'ring-2 ring-inset ring-pink-300' : ''}`}
                 >
                   <span>{format(d, 'd')}</span>
                   {holiday && (
-                    <span className={`mt-0.5 block truncate text-[0.5625rem] leading-tight ${inMonth ? 'text-gray-500' : 'text-gray-300'}`}>{holiday.name}</span>
+                    <span className={`mt-0.5 block truncate text-xs leading-tight ${inMonth ? 'text-gray-500' : 'text-gray-300'}`}>{holiday.name}</span>
                   )}
                 </div>
               )

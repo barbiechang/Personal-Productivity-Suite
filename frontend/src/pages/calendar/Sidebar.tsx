@@ -34,22 +34,22 @@ function ChecklistWidget({ year, month, kind, title }: { year: number; month: nu
 
   return (
     <div className="mb-5">
-      <h3 className="mb-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-500">{title}</h3>
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{title}</h3>
       <div className="mb-2 flex gap-1">
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && add()}
           placeholder="Add..."
-          className="w-full rounded-md border border-gray-200 px-2 py-1 text-xs outline-none focus:border-pink-300"
+          className="w-full rounded-md border border-gray-200 px-2 py-1 text-sm outline-none focus:border-pink-300"
         />
-        <button onClick={add} className="rounded-md bg-pink-100 px-2 text-xs text-pink-600 hover:bg-pink-200">
+        <button onClick={add} className="rounded-md bg-pink-100 px-2 text-sm text-pink-600 hover:bg-pink-200">
           +
         </button>
       </div>
       <ul className="flex flex-col gap-1">
         {items.map((item) => (
-          <li key={item.id} className="group flex items-center gap-2 text-xs text-gray-700">
+          <li key={item.id} className="group flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" checked={item.isDone} onChange={() => toggle(item)} className="accent-pink-400" />
             <span className={`flex-1 ${item.isDone ? 'text-gray-400 line-through' : ''}`}>{item.text}</span>
             <button
@@ -87,16 +87,16 @@ function NotesWidget({ year, month }: { year: number; month: number }) {
 
   return (
     <div className="mb-5">
-      <h3 className="mb-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-500">Notes</h3>
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Notes</h3>
       <div className="mb-2 flex gap-1">
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && add()}
           placeholder="Add a note..."
-          className="w-full rounded-md border border-gray-200 px-2 py-1 text-xs outline-none focus:border-pink-300"
+          className="w-full rounded-md border border-gray-200 px-2 py-1 text-sm outline-none focus:border-pink-300"
         />
-        <button onClick={add} className="rounded-md bg-pink-100 px-2 text-xs text-pink-600 hover:bg-pink-200">
+        <button onClick={add} className="rounded-md bg-pink-100 px-2 text-sm text-pink-600 hover:bg-pink-200">
           +
         </button>
       </div>
@@ -104,7 +104,7 @@ function NotesWidget({ year, month }: { year: number; month: number }) {
         {items.map((item, i) => (
           <div
             key={item.id}
-            className="group relative rounded-md px-2 py-1.5 text-xs text-gray-700 shadow-sm"
+            className="group relative rounded-md px-2 py-1.5 text-sm text-gray-700 shadow-sm"
             style={{ backgroundColor: CARD_COLORS[i % CARD_COLORS.length] }}
           >
             {item.text}
@@ -163,7 +163,7 @@ function MoodPhoto({ year, month }: { year: number; month: number }) {
         onClick={() => fileRef.current?.click()}
         className="flex h-28 w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-pink-200 bg-pink-50/50"
       >
-        {photo ? <img src={photo.imageDataUrl} alt="" className="h-full w-full object-contain" /> : <span className="text-xs text-pink-300">+ Add photo</span>}
+        {photo ? <img src={photo.imageDataUrl} alt="" className="h-full w-full object-contain" /> : <span className="text-sm text-pink-300">+ Add photo</span>}
       </button>
 
       {pendingFile && <ImageCropModal file={pendingFile} onCancel={() => setPendingFile(null)} onConfirm={handleConfirm} />}
@@ -194,12 +194,12 @@ export default function Sidebar({
   })()
 
   return (
-    <aside className="w-56 shrink-0 border-r border-pink-100 bg-white/60 p-4">
+    <aside className="w-64 shrink-0 border-r border-pink-100 bg-white/60 p-4">
       <div className="mb-3 flex items-center gap-2">
         <select
           value={monthIndex}
           onChange={(e) => onSelectMonth(new Date(year, Number(e.target.value), 1))}
-          className="rounded-md border border-gray-200 bg-white px-1.5 py-1 text-xs"
+          className="rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm"
         >
           {Array.from({ length: 12 }).map((_, i) => (
             <option key={i} value={i}>
@@ -210,7 +210,7 @@ export default function Sidebar({
         <select
           value={year}
           onChange={(e) => onSelectMonth(new Date(Number(e.target.value), monthIndex, 1))}
-          className="rounded-md border border-gray-200 bg-white px-1.5 py-1 text-xs"
+          className="rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm"
         >
           {Array.from({ length: 11 }).map((_, i) => {
             const y = new Date().getFullYear() - 5 + i
@@ -225,7 +225,7 @@ export default function Sidebar({
 
       <div className="mb-5 grid grid-cols-7 gap-0.5 rounded-lg bg-white p-2 text-center">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-          <span key={i} className="text-[0.5625rem] text-gray-400">
+          <span key={i} className="text-xs text-gray-400">
             {d}
           </span>
         ))}
@@ -236,7 +236,7 @@ export default function Sidebar({
               key={d.toISOString()}
               onClick={() => onHighlightDay(d)}
               title={holiday?.name}
-              className={`relative rounded-full text-[0.5625rem] leading-5 ${
+              className={`relative rounded-full text-xs leading-6 ${
                 !isSameMonth(d, month) ? 'text-gray-300' : isToday(d) ? 'bg-pink-400 text-white' : 'text-gray-600 hover:bg-pink-50'
               } ${highlightDay && isSameDay(d, highlightDay) ? 'ring-1 ring-pink-400' : ''}`}
             >
