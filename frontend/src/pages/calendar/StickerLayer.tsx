@@ -99,6 +99,21 @@ function useContainerDrag(
   return { pos, setPos, posRef, startDrag }
 }
 
+function ResizeHandle({ onMouseDown, className }: { onMouseDown: (e: React.MouseEvent) => void; className: string }) {
+  return (
+    <div
+      onMouseDown={onMouseDown}
+      title="Drag to resize"
+      className={`absolute -bottom-2 -right-2 hidden h-6 w-6 cursor-nwse-resize items-center justify-center rounded-full border border-pink-200 bg-white text-pink-400 shadow hover:bg-pink-50 ${className}`}
+    >
+      {/* Diagonal double arrow: reads as "resize from this corner". */}
+      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9.5 3H13v3.5M13 3 3 13M6.5 13H3V9.5" />
+      </svg>
+    </div>
+  )
+}
+
 function Sticker({
   sticker,
   containerRef,
@@ -166,11 +181,12 @@ function Sticker({
           e.stopPropagation()
           onDelete(sticker.id)
         }}
-        className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-[1rem] text-gray-400 shadow group-hover/sticker:flex"
+        title="Remove"
+        className="absolute -right-2 -top-2 hidden h-6 w-6 items-center justify-center rounded-full bg-white text-base leading-none text-gray-400 shadow hover:text-red-500 group-hover/sticker:flex"
       >
         ×
       </button>
-      <div onMouseDown={startResize} className="absolute bottom-1 right-0 h-2.5 w-2.5 translate-x-1/4 cursor-nwse-resize rounded-full bg-pink-300 opacity-0 group-hover/sticker:opacity-100" />
+      <ResizeHandle onMouseDown={startResize} className="group-hover/sticker:flex" />
     </div>
   )
 }
@@ -180,17 +196,48 @@ function TextBoxItem({
   containerRef,
   onCommitPosition,
   onCommitText,
+  onCommitFontSize,
   onDelete,
 }: {
   box: TextBoxLike
   containerRef: RefObject<HTMLDivElement | null>
   onCommitPosition: (id: string, x: number, y: number) => void
   onCommitText: (id: string, text: string) => void
+  onCommitFontSize?: (id: string, fontSize: number) => void
   onDelete: (id: string) => void
 }) {
   const { pos, startDrag } = useContainerDrag(containerRef, { x: box.x, y: box.y }, (x, y) => onCommitPosition(box.id, x, y))
   const [editing, setEditing] = useState(false)
   const [text, setText] = useState(box.text)
+  // Stored size is px at the old scale; render 1.5x in rem so it also grows on big screens.
+  const [fontSize, setFontSize] = useState(box.fontSize)
+  const fontSizeRef = useRef(box.fontSize)
+  const textRef = useRef<HTMLDivElement>(null)
+  const textSize = `${(fontSize * 1.5) / 16}rem`
+
+  // Dragging the corner scales the text proportionally to the box width.
+  function startResize(e: React.MouseEvent) {
+    e.stopPropagation()
+    e.preventDefault()
+    const startWidth = textRef.current?.offsetWidth || 1
+    const startSize = fontSizeRef.current
+    const startClientX = e.clientX
+    const startClientY = e.clientY
+
+    function onMove(ev: MouseEvent) {
+      const d = (ev.clientX - startClientX + ev.clientY - startClientY) / 2
+      const next = Math.round(Math.min(72, Math.max(6, startSize * ((startWidth + d) / startWidth))))
+      fontSizeRef.current = next
+      setFontSize(next)
+    }
+    function onUp() {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+      if (fontSizeRef.current !== startSize) onCommitFontSize?.(box.id, fontSizeRef.current)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }
 
   function commit() {
     setEditing(false)
@@ -210,18 +257,19 @@ function TextBoxItem({
           onChange={(e) => setText(e.target.value)}
           onBlur={commit}
           rows={2}
-          style={{ fontSize: box.fontSize }}
-          className="w-40 resize-none rounded-md border border-pink-200 bg-white/90 px-1.5 py-1 text-center text-gray-700 outline-none"
+          style={{ fontSize: textSize }}
+          className="w-56 resize-none rounded-md border border-pink-200 bg-white/90 px-1.5 py-1 text-center text-gray-700 outline-none"
         />
       ) : (
         <div
+          ref={textRef}
           onMouseDown={startDrag}
           onDoubleClick={(e) => {
             e.stopPropagation()
             setEditing(true)
           }}
-          style={{ fontSize: box.fontSize }}
-          className="max-w-[10rem] cursor-move select-none whitespace-pre-wrap break-words text-center font-normal text-black font-semibold"
+          style={{ fontSize: textSize }}
+          className="max-w-[24rem] cursor-move select-none whitespace-pre-wrap break-words text-center font-normal text-black font-semibold"
         >
           {box.text}
         </div>
@@ -231,10 +279,12 @@ function TextBoxItem({
           e.stopPropagation()
           onDelete(box.id)
         }}
-        className="absolute -right-4 -top-2 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-[0.875rem] text-gray-400 shadow group-hover/text:flex"
+        title="Remove"
+        className="absolute -right-5 -top-3 hidden h-6 w-6 items-center justify-center rounded-full bg-white text-base leading-none text-gray-400 shadow hover:text-red-500 group-hover/text:flex"
       >
         ×
       </button>
+      {onCommitFontSize && !editing && <ResizeHandle onMouseDown={startResize} className="group-hover/text:flex" />}
     </div>
   )
 }
@@ -249,6 +299,7 @@ export default function StickerLayer({
   onTextPosition,
   onTextCommit,
   onTextDelete,
+  onTextFontSize,
   unboundedY = false,
 }: {
   containerRef: RefObject<HTMLDivElement | null>
@@ -260,6 +311,7 @@ export default function StickerLayer({
   onTextPosition: (id: string, x: number, y: number) => void
   onTextCommit: (id: string, text: string) => void
   onTextDelete: (id: string) => void
+  onTextFontSize?: (id: string, fontSize: number) => void
   /** Let stickers be dragged below the container (the page scrolls to follow). */
   unboundedY?: boolean
 }) {
@@ -269,7 +321,7 @@ export default function StickerLayer({
         <Sticker key={s.id} sticker={s} containerRef={containerRef} onCommitPosition={onStickerPosition} onCommitSize={onStickerSize} onDelete={onStickerDelete} unboundedY={unboundedY} />
       ))}
       {textBoxes.map((b) => (
-        <TextBoxItem key={b.id} box={b} containerRef={containerRef} onCommitPosition={onTextPosition} onCommitText={onTextCommit} onDelete={onTextDelete} />
+        <TextBoxItem key={b.id} box={b} containerRef={containerRef} onCommitPosition={onTextPosition} onCommitText={onTextCommit} onCommitFontSize={onTextFontSize} onDelete={onTextDelete} />
       ))}
     </>
   )

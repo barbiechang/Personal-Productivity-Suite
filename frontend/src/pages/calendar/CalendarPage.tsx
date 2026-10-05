@@ -138,6 +138,11 @@ export default function CalendarPage() {
     await api.put(`/calendar-text-boxes/${id}`, { text })
   }
 
+  async function handleTextFontSize(id: string, fontSize: number) {
+    setTextBoxes((prev) => prev.map((b) => (b.id === id ? { ...b, fontSize } : b)))
+    await api.put(`/calendar-text-boxes/${id}`, { fontSize })
+  }
+
   async function handleTextDelete(id: string) {
     setTextBoxes((prev) => prev.filter((b) => b.id !== id))
     await api.delete(`/calendar-text-boxes/${id}`)
@@ -250,6 +255,7 @@ export default function CalendarPage() {
                 onTextPosition={handleTextPosition}
                 onTextCommit={handleTextCommit}
                 onTextDelete={handleTextDelete}
+                onTextFontSize={handleTextFontSize}
               />
             </div>
           </div>
