@@ -104,7 +104,7 @@ function ResizeHandle({ onMouseDown, className }: { onMouseDown: (e: React.Mouse
     <div
       onMouseDown={onMouseDown}
       title="Drag to resize"
-      className={`absolute -bottom-2.5 -right-2.5 hidden h-5 w-5 cursor-nwse-resize items-center justify-center rounded-full border border-pink-200 bg-white text-pink-400 shadow-sm hover:bg-pink-50 ${className}`}
+      className={`absolute -bottom-2.5 -right-2.5 h-5 w-5 cursor-nwse-resize items-center justify-center rounded-full border border-pink-200 bg-white text-pink-400 shadow-sm hover:bg-pink-50 ${className}`}
     >
       {/* Diagonal double arrow: reads as "resize from this corner". */}
       <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -186,7 +186,7 @@ function Sticker({
       >
         ×
       </button>
-      <ResizeHandle onMouseDown={startResize} className="group-hover/sticker:flex" />
+      <ResizeHandle onMouseDown={startResize} className="hidden group-hover/sticker:flex" />
     </div>
   )
 }
