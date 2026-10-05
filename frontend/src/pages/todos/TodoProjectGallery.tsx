@@ -240,10 +240,10 @@ function ProjectCard({
   const duration = dateRangeLabel(project.startDate, project.endDate);
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div className="group relative flex aspect-square flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <button
         onClick={onNavigate}
-        className="flex h-28 w-full items-center justify-center overflow-hidden bg-gradient-to-br from-pink-50 to-rose-100"
+        className="flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-pink-50 to-rose-100"
       >
         {project.coverDataUrl ? (
           <img
@@ -280,7 +280,7 @@ function ProjectCard({
 
       <button
         onClick={onNavigate}
-        className="flex flex-col gap-1 px-2 py-2 text-left"
+        className="flex shrink-0 flex-col gap-1 px-3 py-2.5 text-left"
       >
         <p className="truncate text-sm font-medium text-gray-800">
           {project.name} ⋆𐙚 ̊.
@@ -305,7 +305,7 @@ function ProjectCard({
   );
 }
 
-const GRID_CLASS = "grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4";
+const GRID_CLASS = "grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-4";
 
 type CoverTarget = { type: "banner" } | { type: "bannerIcon" };
 
@@ -461,7 +461,7 @@ export default function TodoProjectGallery() {
         <div className={GRID_CLASS}>
           <button
             onClick={() => setModalTarget("new")}
-            className="flex aspect-[4/3] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-pink-400 hover:text-pink-500"
+            className="flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-pink-400 hover:text-pink-500"
           >
             <span className="text-2xl leading-none">+</span>
             <span className="text-sm">New Project</span>
