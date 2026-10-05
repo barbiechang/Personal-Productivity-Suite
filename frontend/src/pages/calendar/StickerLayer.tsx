@@ -1,4 +1,4 @@
-import { useRef, useState, type RefObject } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 
 export interface StickerLike {
   id: string
@@ -104,10 +104,10 @@ function ResizeHandle({ onMouseDown, className }: { onMouseDown: (e: React.Mouse
     <div
       onMouseDown={onMouseDown}
       title="Drag to resize"
-      className={`absolute -bottom-2 -right-2 hidden h-6 w-6 cursor-nwse-resize items-center justify-center rounded-full border border-pink-200 bg-white text-pink-400 shadow hover:bg-pink-50 ${className}`}
+      className={`absolute -bottom-2.5 -right-2.5 hidden h-5 w-5 cursor-nwse-resize items-center justify-center rounded-full border border-pink-200 bg-white text-pink-400 shadow-sm hover:bg-pink-50 ${className}`}
     >
       {/* Diagonal double arrow: reads as "resize from this corner". */}
-      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9.5 3H13v3.5M13 3 3 13M6.5 13H3V9.5" />
       </svg>
     </div>
@@ -182,7 +182,7 @@ function Sticker({
           onDelete(sticker.id)
         }}
         title="Remove"
-        className="absolute -right-2 -top-2 hidden h-6 w-6 items-center justify-center rounded-full bg-white text-base leading-none text-gray-400 shadow hover:text-red-500 group-hover/sticker:flex"
+        className="absolute -right-2.5 -top-2.5 hidden h-5 w-5 items-center justify-center rounded-full bg-white text-sm leading-none text-gray-400 shadow-sm hover:text-red-500 group-hover/sticker:flex"
       >
         ×
       </button>
@@ -213,6 +213,18 @@ function TextBoxItem({
   const [fontSize, setFontSize] = useState(box.fontSize)
   const fontSizeRef = useRef(box.fontSize)
   const textRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  // Box outline and controls only show while selected; clicking elsewhere hides them.
+  const [selected, setSelected] = useState(false)
+
+  useEffect(() => {
+    if (!selected) return
+    function onDocMouseDown(e: MouseEvent) {
+      if (!wrapperRef.current?.contains(e.target as Node)) setSelected(false)
+    }
+    document.addEventListener('mousedown', onDocMouseDown)
+    return () => document.removeEventListener('mousedown', onDocMouseDown)
+  }, [selected])
   const textSize = `${(fontSize * 1.5) / 16}rem`
 
   // Dragging the corner scales the text proportionally to the box width.
@@ -249,7 +261,12 @@ function TextBoxItem({
   }
 
   return (
-    <div className="group/text absolute" style={{ left: `${pos.x}%`, top: `${pos.y}%`, maxWidth: '45%', zIndex: 50 }}>
+    <div
+      ref={wrapperRef}
+      onMouseDown={() => setSelected(true)}
+      className={`absolute rounded-md border px-2 py-1 ${selected ? 'border-dashed border-pink-400 bg-white/40' : 'border-transparent'}`}
+      style={{ left: `${pos.x}%`, top: `${pos.y}%`, maxWidth: '45%', zIndex: 50 }}
+    >
       {editing ? (
         <textarea
           autoFocus
@@ -258,12 +275,15 @@ function TextBoxItem({
           onBlur={commit}
           rows={2}
           style={{ fontSize: textSize }}
-          className="w-56 resize-none rounded-md border border-pink-200 bg-white/90 px-1.5 py-1 text-center text-gray-700 outline-none"
+          className="w-56 resize-none rounded-md bg-white/90 px-1.5 py-1 text-center text-gray-700 outline-none"
         />
       ) : (
         <div
           ref={textRef}
-          onMouseDown={startDrag}
+          onMouseDown={(e) => {
+            setSelected(true)
+            startDrag(e)
+          }}
           onDoubleClick={(e) => {
             e.stopPropagation()
             setEditing(true)
@@ -274,17 +294,22 @@ function TextBoxItem({
           {box.text}
         </div>
       )}
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          onDelete(box.id)
-        }}
-        title="Remove"
-        className="absolute -right-5 -top-3 hidden h-6 w-6 items-center justify-center rounded-full bg-white text-base leading-none text-gray-400 shadow hover:text-red-500 group-hover/text:flex"
-      >
-        ×
-      </button>
-      {onCommitFontSize && !editing && <ResizeHandle onMouseDown={startResize} className="group-hover/text:flex" />}
+      {selected && (
+        <>
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(box.id)
+            }}
+            title="Remove"
+            className="absolute -right-2.5 -top-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm leading-none text-gray-400 shadow-sm hover:text-red-500"
+          >
+            ×
+          </button>
+          {onCommitFontSize && !editing && <ResizeHandle onMouseDown={startResize} className="flex" />}
+        </>
+      )}
     </div>
   )
 }

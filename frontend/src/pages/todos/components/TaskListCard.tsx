@@ -100,14 +100,7 @@ export default function TaskListCard({
                     <button
                       type="button"
                       onClick={() => onDelete(todo.id)}
-                      className="
-                        invisible
-                        text-[0.625rem]
-                        text-gray-400
-                        transition
-                        hover:text-red-500
-                        group-hover:visible
-                      "
+                      className="invisible flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-lg leading-none text-gray-400 transition hover:bg-red-50 hover:text-red-500 group-hover:visible"
                     >
                       ×
                     </button>
